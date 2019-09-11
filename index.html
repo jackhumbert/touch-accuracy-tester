@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Touch Accuracy Tester</title>
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="normalize.css">
+
+<style>
+
+html, body {
+  height: 100%;
+}
+
+div {
+  position: absolute;
+  background: red;
+  border-radius: 100px;
+}
+
+</style>
+
+<script>
+var started = false;
+var size, x, y, data_json;
+
+var url = "https://script.google.com/macros/s/AKfycbwOFFR10AJ1FlUJ6sYP_tcp8OAV63X0eBu1h6jCi8BGRF9GpaaR/exec"
+
+document.onmousedown = function(event) {
+  if (started) {
+
+    var data = new FormData();
+    data.append("width", document.body.offsetWidth);
+    data.append("height", document.body.offsetHeight);
+    data.append("x", x + (size / 2));
+    data.append("y", y + (size / 2));
+    data.append("size", size);
+    data.append("x_d", (x + (size / 2) - event.pageX));
+    data.append("y_d", (y + (size / 2) - event.pageY));
+
+    data_json = {
+      "width": document.body.offsetWidth,
+      "height": document.body.offsetHeight,
+      "x": x + (size / 2),
+      "y": y + (size / 2),
+      "size": size,
+      "x_d": (x + (size / 2) - event.pageX),
+      "y_d": (y + (size / 2) - event.pageY)
+    };
+    var u = new URLSearchParams(data_json).toString();
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url + "?"+ u, true);
+    xhr.onload = function () {
+        // do something to response
+        //console.log(this.responseText);
+    };
+    xhr.send();
+  }
+
+  started = true;
+
+  size = Math.floor(Math.random() * 20) * 2 + 20;
+  x = Math.floor(Math.random() * (document.body.offsetWidth - size));
+  y = Math.floor(Math.random() * (document.body.offsetHeight - size));
+
+  document.body.innerHTML = "<div style='top:"+y+"px; left:"+x+"px; height:"+size+"px; width:"+size+"px'></div>";
+
+
+}
+
+</script>
+
+</head>
+<body>
+</body>
+</html>
